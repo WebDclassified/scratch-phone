@@ -69,7 +69,7 @@ const CardOverlay: React.FC = () => {
     if (!ctx) return;
 
     const { x, y } = getPointerPos(e);
-    const radius = 16;
+    const radius = 30;
 
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
