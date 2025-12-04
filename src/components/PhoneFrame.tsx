@@ -18,10 +18,6 @@ const PhoneFrame: React.FC = () => {
           <div className="phone-ui">
             {!isOpen && (
               <>
-                <h2 className="phone-title">Scratch &amp; Win</h2>
-                <p className="phone-subtitle">
-                  Tap the reward button to reveal your surprise.
-                </p>
 
                 <ScratchButton />
               </>

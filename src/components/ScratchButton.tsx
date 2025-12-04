@@ -13,7 +13,6 @@ const FloatingScratchButton: React.FC = () => {
     >
       <div className="floating-card-content">
         🎁
-        <span>Scratch &amp; Win</span>
       </div>
     </button>
   );

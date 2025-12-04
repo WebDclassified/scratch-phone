@@ -69,7 +69,7 @@ const CardOverlay: React.FC = () => {
     if (!ctx) return;
 
     const { x, y } = getPointerPos(e);
-    const radius = 18;
+    const radius = 16;
 
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -90,18 +90,14 @@ const CardOverlay: React.FC = () => {
     let transparentPixels = 0;
 
     for (let i = 3; i < data.length; i += 4) {
-      if (data[i] === 0) {
-        transparentPixels++;
-      }
+      if (data[i] === 0) transparentPixels++;
     }
 
     const percent = (transparentPixels / totalPixels) * 100;
 
     if (percent >= 40) {
       hasAutoRevealedRef.current = true;
-
       ctx.clearRect(0, 0, width, height);
-
       dispatch(revealPrize());
     }
   };
@@ -115,7 +111,6 @@ const CardOverlay: React.FC = () => {
   const endDrawing = () => {
     if (!isDrawingRef.current) return;
     isDrawingRef.current = false;
-
     checkRevealPercentage();
   };
 
@@ -123,37 +118,29 @@ const CardOverlay: React.FC = () => {
 
   return (
     <div className="scratch-overlay">
-      <div className="scratch-card-container">
-        <div className="scratch-card-inner">
-          <button
-            className="scratch-close-btn"
-            onClick={() => dispatch(closeScratch())}
-          >
-            ✕
-          </button>
+      <div className="scratch-card">
+        <button className="scratch-close-btn" onClick={() => dispatch(closeScratch())}>
+          ✕
+        </button>
 
-          <p className="scratch-tagline">exclusive reward</p>
-          <h3 className="scratch-title">Scratch to reveal your prize</h3>
+        <h3 className="scratch-title">Scratch to Reveal</h3>
 
-          <div className="scratch-area">
-            <div className="scratch-prize">{prize}</div>
+        <div className="scratch-area">
+          <div className="scratch-prize">{prize}</div>
 
-            <canvas
-              ref={canvasRef}
-              className="scratch-canvas"
-              onMouseDown={startDrawing}
-              onMouseMove={scratch}
-              onMouseUp={endDrawing}
-              onMouseLeave={endDrawing}
-              onTouchStart={startDrawing}
-              onTouchMove={scratch}
-              onTouchEnd={endDrawing}
-            />
-          </div>
-
-          <p className="scratch-hint">Scratch at least 40% to reveal.</p>
-          <div className="scratch-footer-accent" />
+          <canvas
+            ref={canvasRef}
+            className="scratch-canvas"
+            onMouseDown={startDrawing}
+            onMouseMove={scratch}
+            onMouseUp={endDrawing}
+            onMouseLeave={endDrawing}
+            onTouchStart={startDrawing}
+            onTouchMove={scratch}
+            onTouchEnd={endDrawing}
+          />
         </div>
+
       </div>
     </div>
   );
