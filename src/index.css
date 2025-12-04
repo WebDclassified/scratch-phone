@@ -16,6 +16,8 @@ body {
   justify-content: center;
 }
 
+
+
 .phone-wrapper {
   display: flex;
   align-items: center;
@@ -63,12 +65,26 @@ body {
   opacity: 0.8;
 }
 
+.background-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0; 
+  transition: filter 0.3s ease;
+}
+
+.blur-bg {
+  filter: blur(6px) brightness(70%);
+}
+
 .floating-card {
   position: absolute;
-  bottom: 18px;
-  right: 18px;
-  width: 46px;
-  height: 46px;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
   border: none;
   border-radius: 999px;
   background: linear-gradient(135deg, #f97316, #ec4899, #8b5cf6);
@@ -87,7 +103,7 @@ body {
 }
 
 .gift-icon {
-  font-size: 1.4rem;
+  font-size: 3rem;
   line-height: 1;
 }
 

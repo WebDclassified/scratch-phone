@@ -1,8 +1,8 @@
 import React from "react";
 import phoneFrame from "../assets/phone.png";
-import ScratchButton from "./ScratchButton";
-import CardOverlay from "./CardOverlay";
-
+import backdrop from "../assets/back1.jpg";
+import FloatingScratchButton from "./ScratchButton";
+import ScratchCardOverlay from "./CardOverlay";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
 
@@ -16,14 +16,22 @@ const PhoneFrame: React.FC = () => {
 
         <div className="phone-screen">
           <div className="phone-ui">
+
+            <div
+              className={`background-image ${isOpen ? "blur-bg" : ""}`}
+              style={{
+                backgroundImage: `url(${backdrop})`,
+              }}
+            ></div>
+
             {!isOpen && (
               <>
 
-                <ScratchButton />
+                <FloatingScratchButton />
               </>
             )}
 
-            <CardOverlay />
+            <ScratchCardOverlay />
           </div>
         </div>
       </div>
