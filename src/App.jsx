@@ -1,12 +1,12 @@
+import PhoneFrame from "./components/PhoneFrame";
 
 
-function App() {
-
+const App = () => {
   return (
-   <div className="app">
+    <div className="app">
       <PhoneFrame />
     </div>
-  )
-}
+  );
+};
 
 export default App
