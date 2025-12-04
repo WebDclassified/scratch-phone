@@ -7,13 +7,14 @@ type CanvasEvent =
   | React.MouseEvent<HTMLCanvasElement>
   | React.TouchEvent<HTMLCanvasElement>;
 
-const ScratchCardOverlay: React.FC = () => {
+const CardOverlay: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isOpen, prize } = useSelector((state: RootState) => state.scratch);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const isDrawingRef = useRef(false);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const hasAutoRevealedRef = useRef(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -23,14 +24,18 @@ const ScratchCardOverlay: React.FC = () => {
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
     ctxRef.current = ctx;
+    hasAutoRevealedRef.current = false;
 
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
 
+    ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "#b0b0b0";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     ctx.globalCompositeOperation = "destination-out";
   }, [isOpen]);
 
@@ -71,6 +76,36 @@ const ScratchCardOverlay: React.FC = () => {
     ctx.fill();
   };
 
+  const checkRevealPercentage = () => {
+    const canvas = canvasRef.current;
+    const ctx = ctxRef.current;
+    if (!canvas || !ctx) return;
+    if (hasAutoRevealedRef.current) return;
+
+    const { width, height } = canvas;
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+
+    const totalPixels = width * height;
+    let transparentPixels = 0;
+
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] === 0) {
+        transparentPixels++;
+      }
+    }
+
+    const percent = (transparentPixels / totalPixels) * 100;
+
+    if (percent >= 40) {
+      hasAutoRevealedRef.current = true;
+
+      ctx.clearRect(0, 0, width, height);
+
+      dispatch(revealPrize());
+    }
+  };
+
   const startDrawing = (e: CanvasEvent) => {
     e.preventDefault();
     isDrawingRef.current = true;
@@ -78,10 +113,10 @@ const ScratchCardOverlay: React.FC = () => {
   };
 
   const endDrawing = () => {
-    if (isDrawingRef.current) {
-      isDrawingRef.current = false;
-      dispatch(revealPrize());
-    }
+    if (!isDrawingRef.current) return;
+    isDrawingRef.current = false;
+
+    checkRevealPercentage();
   };
 
   if (!isOpen) return null;
@@ -89,35 +124,39 @@ const ScratchCardOverlay: React.FC = () => {
   return (
     <div className="scratch-overlay">
       <div className="scratch-card-container">
-        <button
-          className="scratch-close-btn"
-          onClick={() => dispatch(closeScratch())}
-        >
-          ✕
-        </button>
+        <div className="scratch-card-inner">
+          <button
+            className="scratch-close-btn"
+            onClick={() => dispatch(closeScratch())}
+          >
+            ✕
+          </button>
 
-        <h3 className="scratch-title">Scratch to reveal!</h3>
+          <p className="scratch-tagline">exclusive reward</p>
+          <h3 className="scratch-title">Scratch to reveal your prize</h3>
 
-        <div className="scratch-area">
-          <div className="scratch-prize">{prize}</div>
+          <div className="scratch-area">
+            <div className="scratch-prize">{prize}</div>
 
-          <canvas
-            ref={canvasRef}
-            className="scratch-canvas"
-            onMouseDown={startDrawing}
-            onMouseMove={scratch}
-            onMouseUp={endDrawing}
-            onMouseLeave={endDrawing}
-            onTouchStart={startDrawing}
-            onTouchMove={scratch}
-            onTouchEnd={endDrawing}
-          />
+            <canvas
+              ref={canvasRef}
+              className="scratch-canvas"
+              onMouseDown={startDrawing}
+              onMouseMove={scratch}
+              onMouseUp={endDrawing}
+              onMouseLeave={endDrawing}
+              onTouchStart={startDrawing}
+              onTouchMove={scratch}
+              onTouchEnd={endDrawing}
+            />
+          </div>
+
+          <p className="scratch-hint">Scratch at least 40% to reveal.</p>
+          <div className="scratch-footer-accent" />
         </div>
-
-        <p className="scratch-hint">Drag your finger or mouse to scratch.</p>
       </div>
     </div>
   );
 };
 
-export default ScratchCardOverlay;
+export default CardOverlay;

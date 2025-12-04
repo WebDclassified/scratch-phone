@@ -15,11 +15,7 @@ const PhoneFrame: React.FC = () => {
         <img src={phoneFrame} alt="Phone frame" className="phone-frame-img" />
 
         <div className="phone-screen">
-          <div
-            className={`phone-ui ${
-              isOpen ? "phone-ui--overlay-active" : ""
-            }`}
-          >
+          <div className="phone-ui">
             {!isOpen && (
               <>
                 <h2 className="phone-title">Scratch &amp; Win</h2>
